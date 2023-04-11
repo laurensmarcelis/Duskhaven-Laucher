@@ -38,10 +38,10 @@
                 <ColumnDefinition Width="25*"/>
                 <ColumnDefinition Width="25*"/>
                 <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="25*"/>
-                <ColumnDefinition Width="39*"/>
-                <ColumnDefinition Width="11*"/>
+                <ColumnDefinition Width="52*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="9*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="Settings" Content="Settings" Grid.Row="0" Grid.Column="1" Click="Settings_Click" Background="#66000000" BorderBrush="{x:Null}" Foreground="White" FontFamily="Fonts\#Montserrat-Black" Cursor="Hand" AllowDrop="True" Width="Auto" Height="NaN">
                 <Button.Style>
@@ -63,8 +63,8 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="Close" Grid.Column="7" Click="Close_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF0079D0" FontFamily="Fonts\#Montserrat-Black" FontSize="36" Margin="0,0,10,0" Cursor="Hand" HorizontalAlignment="Right" AllowDrop="True" Width="21">
-                <Image Source="images\xmark.png" Cursor="Hand"></Image>
+            <Button x:Name="Minimize" Grid.Column="6" Click="Minimize_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF0079D0" FontFamily="Fonts\#Montserrat-Black" FontSize="36" Margin="0,0,0,0" Cursor="Hand" HorizontalAlignment="Right" AllowDrop="True" Width="12">
+                <Image Source="images\icon-minimize.png" Cursor="Hand"></Image>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="Template">
@@ -84,7 +84,28 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button x:Name="Discord" Grid.Column="6" Click="Discord_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF0079D0" FontFamily="Fonts\#Montserrat-Black" FontSize="36" Cursor="Hand" AllowDrop="True" Margin="20,0,20,0" HorizontalAlignment="Right">
+            <Button x:Name="Close" Grid.Column="7" Click="Close_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF0079D0" FontFamily="Fonts\#Montserrat-Black" FontSize="36" Margin="0,0,10,0" Cursor="Hand" HorizontalAlignment="Right" AllowDrop="True" Width="12">
+                <Image Source="images\icon-close.png" Cursor="Hand"></Image>
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button x:Name="Discord" Grid.Column="5" Click="Discord_Click" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF0079D0" FontFamily="Fonts\#Montserrat-Black" FontSize="36" Cursor="Hand" AllowDrop="True" Margin="20,0,20,0" HorizontalAlignment="Right">
                 <Image Source="images\Discord.png" Cursor="Hand"></Image>
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">

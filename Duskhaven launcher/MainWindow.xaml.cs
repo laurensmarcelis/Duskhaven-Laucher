@@ -609,6 +609,11 @@ namespace Duskhaven_launcher
             Close();
         }
 
+        private void Minimize_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
         private void Discord_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("https://discord.gg/duskhaven");

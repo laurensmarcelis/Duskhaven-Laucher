@@ -45,7 +45,7 @@
         </Grid.ColumnDefinitions>
         <Grid Grid.Row="0" Grid.ColumnSpan="2" >
             <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Settings" Foreground="White" FontSize="36" Margin="0,0,45,0"/>
-            <Image Cursor="Hand" Margin="728,10,0,10" Source="/images/xmark-white.png" MouseUp="Image_MouseUp"/>
+            <Image Cursor="Hand" Margin="728,10,0,10" Source="/images/icon-close-white.png" MouseUp="Image_MouseUp" Width="12"/>
 
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0" >

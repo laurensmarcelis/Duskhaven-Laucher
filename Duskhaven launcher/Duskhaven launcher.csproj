@@ -206,8 +206,12 @@
     <Resource Include="images\Discord.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\xmark-white.png" />
-    <Resource Include="images\xmark.png" />
+    <Resource Include="images\icon-close.png" />
+    <Resource Include="images\icon-close-white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\icon-minimize.png" />
+    <Resource Include="images\icon-minimize-white.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
