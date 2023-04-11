@@ -239,18 +239,18 @@ namespace Duskhaven_launcher
         }
         private void CheckForUpdates()
         {
-            AddActionListItem("checking for valid WoW 3.3.5 installation...");
+            AddActionListItem("Checking for valid WoW 3.3.5 installation...");
             if (!File.Exists(getFilePath("common.MPQ")) && !File.Exists(getFilePath("common-2.MPQ"))) {
                 AddActionListItem("No WoW installation found");
                 
                 Status = LauncherStatus.installClient;
                 return;
             }
-            AddActionListItem("valid WoW 3.3.5 installation found, let's check the Duskhaven files...");
+            AddActionListItem("Valid WoW 3.3.5 installation found, let's check the Duskhaven files...");
             fileUpdateList.Clear();
             fileList.Clear();   
             Status = LauncherStatus.checking;
-            AddActionListItem("checking local files");
+            AddActionListItem("Checking local files");
             
             WebRequest request = WebRequest.Create(uri);
             WebResponse response = request.GetResponse();
@@ -392,7 +392,7 @@ namespace Duskhaven_launcher
         }
         private void AddActionListItem(string action)
         {
-            ActionList.Text += $"{action}\n";
+            ActionList.Text += $"• {action}\n";
         }
         private void InstallGameFiles(bool _isUpdate, bool client = false)
         {
