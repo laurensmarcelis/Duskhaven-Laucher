@@ -264,9 +264,9 @@ namespace Duskhaven_launcher
             {
                 Directory.CreateDirectory(tempDl);
             }
-                AddActionListItem("checking for valid WoW 3.3.5 installation...");
+                AddActionListItem("Checking for valid WoW 3.3.5 installation...");
             if (!File.Exists(GetFilePath("common.MPQ")) && !File.Exists(GetFilePath("common-2.MPQ"))) {
-                AddActionListItem("No WoW installation found");
+                AddActionListItem("No WoW 3.3.5 installation found");
                 
                 Status = LauncherStatus.installClient;
                 return;
