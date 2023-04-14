@@ -96,7 +96,10 @@ namespace Duskhaven_launcher.Pages
 
         private void Cache_fix_Click(object sender, RoutedEventArgs e)
         {
-            string cachePath = Path.Combine(Directory.GetCurrentDirectory(), "WTF");
+            string cachePath = Path.Combine(Directory.GetCurrentDirectory(), "Cache");
+            // string accountCache = Path.Combine(Directory.GetCurrentDirectory(), "WTF", "Account");
+            // string[] cacheList = { cachePath, accountCache };
+
             if (Directory.Exists(cachePath))
             {
                 Directory.Delete(cachePath, true);

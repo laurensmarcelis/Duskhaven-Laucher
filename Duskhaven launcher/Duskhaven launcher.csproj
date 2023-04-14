@@ -388,5 +388,12 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\offline.png" />
+    <Resource Include="images\online.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\minimize.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
