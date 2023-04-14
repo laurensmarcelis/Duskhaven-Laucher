@@ -136,7 +136,7 @@
             </Border>
         </Grid>
         <Grid Grid.Row="1" Grid.ColumnSpan="2" Panel.ZIndex="2">
-            <local:Settings x:Name="SettingsPage" Visibility="Hidden" Grid.ColumnSpan="2"/>
+            <local:Settings x:Name="SettingsPage" Visibility="Visible" Grid.ColumnSpan="2"/>
 
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">

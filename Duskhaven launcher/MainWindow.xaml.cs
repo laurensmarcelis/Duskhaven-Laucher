@@ -579,12 +579,25 @@ namespace Duskhaven_launcher
                 VersionText.Text = "Extracting Done...";
                 AddActionListItem($"Installing done");
                 sw.Stop();
+                string assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
+                string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+                string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 CheckForUpdates();
+                if(folderPath == rootPath)
+                {
+                    return;
+                }
                 if(System.Windows.MessageBox.Show($"Client is installed and will restart from the new location: {installPath}") == MessageBoxResult.OK)
                 {
+                    
+                    Process.Start(rootPath);
                     Close();
-                    Console.WriteLine(Path.Combine(rootPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
-                    Process.Start(Path.Combine(rootPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                    File.Move(assemblyLocation, Path.Combine(rootPath, assemblyName));
+
+                    while (System.Windows.Application.Current != null && System.Windows.Application.Current.MainWindow != null)
+                    {
+                        Thread.Sleep(100); // Wait for 0.1 seconds
+                    }
                 }
             }
             catch (Exception ex)
@@ -620,24 +633,36 @@ namespace Duskhaven_launcher
                     installPath = folderDialog.SelectedPath;
                     string assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
                     string assemblyLocation = Assembly.GetExecutingAssembly().Location;
+
+                    
                     rootPath = installPath;
                     gameExe = Path.Combine(rootPath, "wow.exe");
                     tempDl = Path.Combine(rootPath, "downloads");
                     clientZip = Path.Combine(tempDl, "WoW%203.3.5.zip");
-                    System.Windows.MessageBox.Show($"Alrighty then we will install everything in {installPath}");
-                    File.Copy(assemblyLocation, Path.Combine(installPath, assemblyName), true);
-                    AddActionListItem($"Checking if there is already a valid WoW 3.3.5 installation in {installPath}");
+                    System.Windows.MessageBox.Show($"Alrighty then we will install everything in {rootPath}");
+                    Console.WriteLine(assemblyLocation);
+                    string newLocation = Path.Combine(rootPath, assemblyName);
+                    if (File.Exists(newLocation) && rootPath != folderDialog.SelectedPath)
+                    {
+                        File.Delete(newLocation);
+                    }
+
+                    AddActionListItem($"Checking if there is already a valid WoW 3.3.5 installation in {rootPath}");
                     if(HasGameClient())
                     {
-                        AddActionListItem($"Good news everyone! there is a valid WoW 3.3.5 installation in {installPath}");
-                        if (System.Windows.MessageBox.Show($"Good news everyone! there is a valid WoW 3.3.5 installation in {installPath}\nLet's go there and continue") == MessageBoxResult.OK)
+                        AddActionListItem($"Good news everyone! there is a valid WoW 3.3.5 installation in {rootPath}");
+                        if (System.Windows.MessageBox.Show($"Good news everyone! there is a valid WoW 3.3.5 installation in {rootPath}\nLet's go there and continue") == MessageBoxResult.OK)
                         {
-                            Close();
-                            Console.WriteLine(Path.Combine(installPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
-                            Process.Start(Path.Combine(installPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                            
+                            File.Move(assemblyLocation, Path.Combine(rootPath, assemblyName));
+
+                            while (System.Windows.Application.Current != null && System.Windows.Application.Current.MainWindow != null)
+                            {
+                                Thread.Sleep(100); // Wait for 0.1 seconds
+                            }
+
                         }
-                        CheckForUpdates();
-                        return;
+                        return;  
                     }
 
                     if (!Directory.Exists(tempDl))
