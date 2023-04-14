@@ -157,8 +157,8 @@
 
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
-            <ScrollViewer Margin="20,30,0,0" VerticalAlignment="Top" Height="262" Width="348" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left">
-                <TextBlock x:Name="ActionList" TextWrapping="Wrap" Foreground="white" Padding="10,10,10,10" Height="260" >
+            <ScrollViewer Margin="20,30,0,0" VerticalAlignment="Top" Height="260" Width="350" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" CanContentScroll="True">
+                <TextBlock x:Name="ActionList" TextWrapping="Wrap" Foreground="white" Padding="10,10,10,10" >
                     <TextBlock.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#CC000000" Offset="1"/>

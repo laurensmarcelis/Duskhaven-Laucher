@@ -18,6 +18,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using System.Configuration;
+using System.Runtime.InteropServices;
 
 namespace Duskhaven_launcher
 {
@@ -45,8 +47,9 @@ namespace Duskhaven_launcher
         private string clientZip;
         private string gameExe;
         private string tempDl;
+        private string installPath;
         private string dlUrl;
-        private List<Item> fileList = new List<Item> ();
+        private List<Item> fileList = new List<Item>();
         private List<string> fileUpdateList = new List<string>();
         private LauncherStatus _status;
         private string uri = "https://duskhavenfiles.dev/";
@@ -81,7 +84,7 @@ namespace Duskhaven_launcher
                         PlayButton.Content = "Downloading Update";
                         break;
                     case LauncherStatus.launcherUpdate:
-                            PlayButton.Content = "Update Launcher";
+                        PlayButton.Content = "Update Launcher";
                         break;
                     default:
                         break;
@@ -96,15 +99,21 @@ namespace Duskhaven_launcher
             InitializeComponent();
 
             rootPath = Directory.GetCurrentDirectory();
+            installPath = rootPath;
             gameExe = Path.Combine(rootPath, "wow.exe");
             tempDl = Path.Combine(rootPath, "downloads");
             clientZip = Path.Combine(tempDl, "WoW%203.3.5.zip");
-            
+
 
         }
 
         private async void Window_ContentRendered(object sender, EventArgs e)
         {
+            if (Debugger.IsAttached)
+            {
+                Properties.Settings.Default.Reset();
+                Properties.Settings.Default.Save();
+            }
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             Version assemblyVersion = assembly.GetName().Version;
@@ -114,14 +123,15 @@ namespace Duskhaven_launcher
                 File.Delete(Path.Combine(rootPath, "backup-launcher.exe"));
             }
 
-            if(await GetLauncherVersion())
+
+            if (await GetLauncherVersion())
             {
                 GetServerStatus();
                 GetNews();
                 SetButtonState();
                 CheckForUpdates();
             }
-            
+
         }
         private async void GetServerStatus()
         {
@@ -154,13 +164,13 @@ namespace Duskhaven_launcher
                 imageUri = new Uri("pack://application:,,,/images/offline.png");
                 bitmapImage = new BitmapImage(imageUri);
 
-                
+
                 Console.WriteLine("Unable to ping the IP address.");
             }
 
             ServerStatus.Source = bitmapImage;
 
-            ServerStatus.Visibility= Visibility.Visible;
+            ServerStatus.Visibility = Visibility.Visible;
         }
         private async Task<bool> GetLauncherVersion()
         {
@@ -171,14 +181,14 @@ namespace Duskhaven_launcher
             // Replace these values with your own
             string owner = "laurensmarcelis";
             string repo = "Duskhaven-Launcher";
-            
+
             // Get the latest release information from GitHub API
             string apiUrl = $"https://api.github.com/repos/{owner}/{repo}/releases/latest";
             try
             {
                 dynamic githubData = await GetJson(apiUrl);
                 var tagName = githubData["tag_name"];
-               
+
                 if (tagName == assemblyVersion.ToString())
                 {
                     return true;
@@ -199,11 +209,11 @@ namespace Duskhaven_launcher
             }
 
             return false;
-            
+
         }
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
             if (File.Exists(gameExe) && Status == LauncherStatus.ready)
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo(gameExe);
@@ -242,8 +252,8 @@ namespace Duskhaven_launcher
 
             // Rename the old executable file
             string oldExePath = System.Reflection.Assembly.GetEntryAssembly().Location;
-            string backupExePath = Path.Combine(rootPath,"backup-launcher.exe"); ; // Specify the path to save the backup file
-            File.Move(oldExePath, backupExePath) ;
+            string backupExePath = Path.Combine(rootPath, "backup-launcher.exe"); ; // Specify the path to save the backup file
+            File.Move(oldExePath, backupExePath);
             // Code to close the application
             Close();
 
@@ -258,25 +268,32 @@ namespace Duskhaven_launcher
             Process.Start(oldExePath);
 
         }
+        private Boolean HasGameClient()
+        {
+            if (!File.Exists(GetFilePath("common.MPQ")) && !File.Exists(GetFilePath("common-2.MPQ")))
+            {
+
+                return false;
+            }
+            return true;
+        }
         private void CheckForUpdates()
         {
-            if (!Directory.Exists(tempDl))
+
+            AddActionListItem("Checking for valid WoW 3.3.5 installation...");
+            if (!HasGameClient())
             {
-                Directory.CreateDirectory(tempDl);
-            }
-                AddActionListItem("Checking for valid WoW 3.3.5 installation...");
-            if (!File.Exists(GetFilePath("common.MPQ")) && !File.Exists(GetFilePath("common-2.MPQ"))) {
                 AddActionListItem("No WoW 3.3.5 installation found");
-                
+
                 Status = LauncherStatus.installClient;
                 return;
             }
             AddActionListItem("Valid WoW 3.3.5 installation found, let's check the Duskhaven files...");
             fileUpdateList.Clear();
-            fileList.Clear();   
+            fileList.Clear();
             Status = LauncherStatus.checking;
             AddActionListItem("Checking local files");
-            
+
             WebRequest request = WebRequest.Create(uri);
             WebResponse response = request.GetResponse();
             //Regex regex = new Regex("<a href=\"\\.\\/(?<name>.*(mpq|MPQ|exe))\">");
@@ -296,13 +313,13 @@ namespace Duskhaven_launcher
                 {
                     if (!match.Success) { continue; }
                     if (match.Groups["name"].ToString().Contains("DuskhavenLauncher")) { continue; }
-                    fileList.Add(new Item { Name = match.Groups["name"].ToString(), Date = DateTime.Parse(match.Groups["date"].ToString()) });;
+                    fileList.Add(new Item { Name = match.Groups["name"].ToString(), Date = DateTime.Parse(match.Groups["date"].ToString()) }); ;
                 }
             }
-    
+
             foreach (Item file in fileList)
             {
-                Console.WriteLine(file.Name,file.Date);
+                Console.WriteLine(file.Name, file.Date);
                 long remoteFileSize = 0;
                 long localFileSize = 0;
 
@@ -314,18 +331,18 @@ namespace Duskhaven_launcher
                 {
                     if (checkResponse is HttpWebResponse httpResponse)
                     {
-                        
+
 
                         remoteFileSize = httpResponse.ContentLength;
                     }
                 }
-                
+
                 // Get the size of the local file
                 if (File.Exists(GetFilePath(file.Name)))
                 {
                     localFileSize = new FileInfo(GetFilePath(file.Name)).Length;
                 }
-                else 
+                else
                 {
                     fileUpdateList.Add(file.Name);
                     AddActionListItem($"{file.Name} is not installed, adding to download list");
@@ -335,11 +352,11 @@ namespace Duskhaven_launcher
                 Console.WriteLine(System.IO.File.GetLastWriteTime(GetFilePath(file.Name)));
                 if (remoteFileSize == localFileSize && !file.Name.Contains("exe"))
                 {
-                    
+
                     AddActionListItem($"{file.Name} is up to date, NO update required");
                     Console.WriteLine("The remote file and the local file have the same size.");
                 }
-                else if(remoteFileSize == localFileSize && file.Name.Contains("exe") && file.Date < System.IO.File.GetLastWriteTime(GetFilePath(file.Name)))
+                else if (remoteFileSize == localFileSize && file.Name.Contains("exe") && file.Date < System.IO.File.GetLastWriteTime(GetFilePath(file.Name)))
                 {
                     AddActionListItem($"{file.Name} is up to date, NO update required");
                     Console.WriteLine("The remote file and the local file have the same size.");
@@ -358,7 +375,7 @@ namespace Duskhaven_launcher
             {
                 Status = LauncherStatus.ready;
             }
-            
+
             else if (fileUpdateList.Count == fileList.Count)
             {
                 Status = LauncherStatus.install;
@@ -387,7 +404,7 @@ namespace Duskhaven_launcher
             }
             if (file.Contains(".mpq") || file.Contains(".MPQ"))
             {
-                if(!Directory.Exists(Path.Combine(filePath, "data")))
+                if (!Directory.Exists(Path.Combine(filePath, "data")))
                 {
                     Directory.CreateDirectory(Path.Combine(filePath, "data"));
                 }
@@ -432,7 +449,7 @@ namespace Duskhaven_launcher
 
                 }
 
-                DownloadFiles(fileUpdateList,0) ;
+                DownloadFiles(fileUpdateList, 0);
             }
             catch (Exception ex)
             {
@@ -450,12 +467,12 @@ namespace Duskhaven_launcher
             {
                 if (e.Error == null)
                 {
-                    
+
                     if (index < files.Count - 1)
                     {
                         DownloadFiles(files, index + 1);
                     }
-                    else if( index == files.Count -1)
+                    else if (index == files.Count - 1)
                     {
                         Status = LauncherStatus.ready;
                         VersionText.Text = "Ready to enjoy Duskhaven";
@@ -472,7 +489,7 @@ namespace Duskhaven_launcher
             webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressCallback);
             webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadGameCompleteCallback);
             webClient.DownloadFileAsync(new Uri($"{uri}{files[index]}"), Path.Combine(tempDl, files[index]), files[index]);
-           
+
         }
 
 
@@ -480,7 +497,7 @@ namespace Duskhaven_launcher
         {
             try
             {
-     
+
                 AddActionListItem($"Installing {e.UserState.ToString()}");
                 File.Copy(Path.Combine(tempDl, e.UserState.ToString()), GetFilePath(e.UserState.ToString()), true);
                 File.Delete(Path.Combine(tempDl, e.UserState.ToString()));
@@ -499,14 +516,14 @@ namespace Duskhaven_launcher
             dynamic result = null;
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            if(url.Contains("git"))
+            if (url.Contains("git"))
             {
                 request.UserAgent = "HttpClient";
                 request.Accept = "application/vnd.github.v3+json";
                 request.Method = "GET";
 
             }
-            
+
             using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
             {
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -554,6 +571,7 @@ namespace Duskhaven_launcher
         {
             AddActionListItem($"Installing WotLK 3.3.5 client");
             VersionText.Text = "Extracting WotLK files to directory...";
+            Thread.Sleep(10);
             try
             {
                 ZipFile.ExtractToDirectory(clientZip, rootPath);
@@ -562,6 +580,12 @@ namespace Duskhaven_launcher
                 AddActionListItem($"Installing done");
                 sw.Stop();
                 CheckForUpdates();
+                if(System.Windows.MessageBox.Show($"Client is installed and will restart from the new location: {installPath}") == MessageBoxResult.OK)
+                {
+                    Close();
+                    Console.WriteLine(Path.Combine(rootPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                    Process.Start(Path.Combine(rootPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                }
             }
             catch (Exception ex)
             {
@@ -575,10 +599,10 @@ namespace Duskhaven_launcher
         {
             string downloadedMBs = Math.Round(e.BytesReceived / 1024.0 / 1024.0, 0).ToString() + " MB";
             string totalMBs = Math.Round(e.TotalBytesToReceive / 1024.0 / 1024.0, 0).ToString() + " MB";
-            string speed = $"{e.BytesReceived / 1024 / 1024 /sw.Elapsed.TotalSeconds:F2} MB/s";
+            string speed = $"{e.BytesReceived / 1024 / 1024 / sw.Elapsed.TotalSeconds:F2} MB/s";
             // Displays the operation identifier, and the transfer progress.
             // SpeedText.Text = speed;
-            VersionText.Text = $"{(string)e.UserState} downloaded {downloadedMBs} of {totalMBs} bytes. {e.ProgressPercentage} % complete...";
+            VersionText.Text = $"{(string)e.UserState} downloaded {downloadedMBs} of {totalMBs} | {e.ProgressPercentage} % complete...";
             dlProgress.Visibility = Visibility.Visible;
             dlProgress.Value = e.ProgressPercentage;
         }
@@ -587,18 +611,45 @@ namespace Duskhaven_launcher
         {
             try
             {
-                var dialog = new FolderBrowserDialog();
+                AddActionListItem($"Where would you like to download and install Duskhaven?");
+                var folderDialog = new FolderBrowserDialog();
+                folderDialog.SelectedPath = rootPath;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    string selectedPath = dialog.SelectedPath;
-                    Console.WriteLine(selectedPath);
+                    installPath = folderDialog.SelectedPath;
                     string assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".exe";
                     string assemblyLocation = Assembly.GetExecutingAssembly().Location;
-                    File.Copy(assemblyLocation, Path.Combine(selectedPath, assemblyName), true) ;
-                    //return;
-                    // Use the selected path here
+                    rootPath = installPath;
+                    gameExe = Path.Combine(rootPath, "wow.exe");
+                    tempDl = Path.Combine(rootPath, "downloads");
+                    clientZip = Path.Combine(tempDl, "WoW%203.3.5.zip");
+                    System.Windows.MessageBox.Show($"Alrighty then we will install everything in {installPath}");
+                    File.Copy(assemblyLocation, Path.Combine(installPath, assemblyName), true);
+                    AddActionListItem($"Checking if there is already a valid WoW 3.3.5 installation in {installPath}");
+                    if(HasGameClient())
+                    {
+                        AddActionListItem($"Good news everyone! there is a valid WoW 3.3.5 installation in {installPath}");
+                        if (System.Windows.MessageBox.Show($"Good news everyone! there is a valid WoW 3.3.5 installation in {installPath}\nLet's go there and continue") == MessageBoxResult.OK)
+                        {
+                            Close();
+                            Console.WriteLine(Path.Combine(installPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                            Process.Start(Path.Combine(installPath, Assembly.GetExecutingAssembly().GetName().Name + ".exe"));
+                        }
+                        CheckForUpdates();
+                        return;
+                    }
+
+                    if (!Directory.Exists(tempDl))
+                    {
+                        Directory.CreateDirectory(tempDl);
+                    }
                 }
+                else
+                {
+                    return;
+                }
+
                 AddActionListItem($"Downloading WotLK 3.3.5 client");
                 sw = Stopwatch.StartNew();
                 WebClient webClient = new WebClient();
@@ -607,6 +658,8 @@ namespace Duskhaven_launcher
                 webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressCallback);
                 webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadWotlkClientCompleteCallback);
                 webClient.DownloadFileAsync(new Uri($"{uri}WoW%203.3.5.zip"), clientZip);
+
+
             }
             catch (Exception ex)
             {
@@ -619,14 +672,15 @@ namespace Duskhaven_launcher
         private void DLButton_Click(object sender, RoutedEventArgs e)
         {
             InstallgameClient();
-            
+
         }
         private void SetButtonState()
         {
             if (Status == LauncherStatus.ready || Status == LauncherStatus.installClient || Status == LauncherStatus.failed || Status == LauncherStatus.install || Status == LauncherStatus.launcherUpdate)
             {
                 PlayButton.IsEnabled = true;
-            } else
+            }
+            else
             {
                 PlayButton.IsEnabled = false;
             }
@@ -639,7 +693,7 @@ namespace Duskhaven_launcher
 
         private void Grid_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragMove();
             }
@@ -672,13 +726,14 @@ namespace Duskhaven_launcher
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            if(Status == LauncherStatus.downloadingGame || Status == LauncherStatus.downloadingUpdate)
+            if (Status == LauncherStatus.downloadingGame || Status == LauncherStatus.downloadingUpdate)
             {
                 if (System.Windows.MessageBox.Show("Are you sure you want to close the launcher when it is downloading files? You will have to download the files again", "Launcher is downloading files!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     Close();
-                    
-                } else
+
+                }
+                else
                 {
                     return;
                 }
@@ -694,14 +749,15 @@ namespace Duskhaven_launcher
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            if(SettingsPage.isOpen) {
+            if (SettingsPage.isOpen)
+            {
                 SettingsPage.SlideOut();
             }
             else
             {
                 SettingsPage.SlideIn();
             }
-            
+
         }
 
         private void Minimize_Click(object sender, RoutedEventArgs e)
