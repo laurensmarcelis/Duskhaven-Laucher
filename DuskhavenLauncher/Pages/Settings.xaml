@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="DuskhavenLauncher.Pages.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DuskhavenLauncher.Pages"
+             x:Name = "SettingsPage"
+             mc:Ignorable="d" 
+             Visibility="Visible"
+             d:DesignHeight="400" d:DesignWidth="800" Background="#D8000000">
+
+    <UserControl.RenderTransform>
+        <TranslateTransform Y="{Binding ElementName=SettingsPage, Path=ActualHeight}"/>
+    </UserControl.RenderTransform>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Storyboard x:Key="SlideIn">
+                <DoubleAnimation Storyboard.TargetName="SettingsPage"
+                       Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                       From="{Binding ElementName=SettingsPage, Path=ActualHeight}"
+                       To="0" Duration="0:0:0.3"/>
+            </Storyboard>
+
+            <Storyboard x:Key="SlideOut">
+                <DoubleAnimation Storyboard.TargetName="SettingsPage"
+                       Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                       From="0"
+                       To="{Binding ElementName=SettingsPage, Path=ActualHeight}" Duration="0:0:0.3"/>
+            </Storyboard>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/GeneralStyle/Buttons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="Container"  Margin="20,20,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.ColumnSpan="2" >
+            <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Settings" Foreground="White" FontSize="36" Margin="0,0,45,0"/>
+            <Image Cursor="Hand" Margin="728,10,0,10" Source="/Images/xmark-white.png" MouseUp="Image_MouseUp"/>
+
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="0" >
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Open Directory" Foreground="White" FontSize="24" Margin="0,0,0,10"/>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Addons_folder" Content="Addons folder "  Margin="0,0,0,5" Click="Addons_folder_Click"/>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Install_folder"  Content="Installation folder"  Click="Install_folder_Click"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1">
+                    <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Fixes" Foreground="White" FontSize="24" Margin="0,0,0,10"/>
+
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Windowed_fix" Content="Windowed fix"   Margin="0,0,0,5" Click="Windowed_fix_Click"/>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Cache_fix" Content="Remove Cache"  Margin="0,0,0,5" Click="Cache_fix_Click" />
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Verify_PatchZ" Content="Verify Patch-Z" Click="Verify_PatchZ_Click" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Addons" Foreground="White" FontSize="24" Visibility="Hidden"/>
+        </Grid>
+    </Grid>
+</UserControl>
