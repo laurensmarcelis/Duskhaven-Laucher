@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -114,8 +115,19 @@ namespace DuskhavenLauncher.Pages
 
         private async void Verify_PatchZ_Click(object sender, RoutedEventArgs e)
         {
-            await MainWindow.CheckSignature("patch-Z.mpq");
+            if (System.Windows.MessageBox.Show($"Launcher is checking the difference between Patch-Z file's, this will make the launcher hang for a few seconds.") == MessageBoxResult.OK)
+            {
+                SlideOut();
+                await MainWindow.CheckSignature("patch-Z.mpq");
 
+            }
+        }
+
+        private void Exe_Fix_Click(object sender, RoutedEventArgs e)
+        {
+                List<string> fileUpdateList = new List<string> { "wow.exe" };
+                MainWindow.DownloadFiles(fileUpdateList, 0);
+            
         }
     }
 }

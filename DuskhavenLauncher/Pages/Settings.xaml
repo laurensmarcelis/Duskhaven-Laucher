@@ -51,8 +51,9 @@
         <Grid Grid.Row="1" Grid.Column="0" >
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="21*"/>
+                    <RowDefinition Height="41*"/>
+                    <RowDefinition Height="0*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
                     <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Open Directory" Foreground="White" FontSize="24" Margin="0,0,0,10"/>
@@ -60,11 +61,11 @@
                     <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Install_folder"  Content="Installation folder"  Click="Install_folder_Click"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1">
-                    <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Fixes" Foreground="White" FontSize="24" Margin="0,0,0,10"/>
-
+                <TextBlock FontFamily="\Fonts\#Montserrat Light" Text="Fixes" Foreground="White" FontSize="24" Margin="0,0,0,10"/>
                     <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Windowed_fix" Content="Windowed fix"   Margin="0,0,0,5" Click="Windowed_fix_Click"/>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Cache_fix" Content="Remove Cache"  Margin="0,0,0,5" Click="Cache_fix_Click" />
-                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Verify_PatchZ" Content="Verify Patch-Z" Click="Verify_PatchZ_Click" />
+                        <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Cache_fix" Content="Remove Cache"  Margin="0,0,0,5" Click="Cache_fix_Click" />
+                        <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Verify_PatchZ" Content="Verify Patch-Z" Margin="0,0,0,5" Click="Verify_PatchZ_Click" />
+                    <Button Style="{StaticResource PrimaryButtonStyle}" x:Name="Exe_Fix" Content="WoW.exe fix" Margin="0,0,0,5" Click="Exe_Fix_Click" />
                 </StackPanel>
             </Grid>
         </Grid>

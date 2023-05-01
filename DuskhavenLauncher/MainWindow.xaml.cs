@@ -57,7 +57,7 @@ namespace DuskhavenLauncher
     public partial class MainWindow : Window
     {
         private Stopwatch sw;
-        private string rootPath;
+        public string rootPath;
         private string gameExe;
         private string tempDl;
         private string installPath;
@@ -535,7 +535,7 @@ namespace DuskhavenLauncher
             }
         }
 
-        private string GetFilePath(string file)
+        public string GetFilePath(string file)
         {
             string filePath = rootPath;
             if (file.Contains(".exe"))
@@ -614,7 +614,7 @@ namespace DuskhavenLauncher
 
         }
 
-        private void DownloadFiles(List<string> files, int index)
+        public void DownloadFiles(List<string> files, int index)
         {
 
             WebClient webClient = new WebClient();
@@ -836,7 +836,7 @@ namespace DuskhavenLauncher
                     rootPath = installPath;
                     gameExe = Path.Combine(rootPath, "wow.exe");
                     tempDl = Path.Combine(rootPath, "downloads");
-                    System.Windows.MessageBox.Show($"Alrighty then we will install everything in {rootPath}");
+                    //System.Windows.MessageBox.Show($"Alrighty then we will install everything in {rootPath}");
                     Console.WriteLine(assemblyLocation);
                     string newLocation = Path.Combine(rootPath, assemblyName);
                     if (File.Exists(newLocation) && rootPath != folderDialog.SelectedPath)
@@ -848,7 +848,7 @@ namespace DuskhavenLauncher
                     if (HasGameClient())
                     {
                         AddActionListItem($"Good news everyone! there is a valid WoW 3.3.5 installation in {rootPath}", ActionType.successAction);
-                        if (System.Windows.MessageBox.Show($"Good news everyone! there is a valid WoW 3.3.5 installation in {rootPath}\nLet's go there and continue") == MessageBoxResult.OK)
+                        if (System.Windows.MessageBox.Show($"Good news everyone! there is a valid WoW 3.3.5 installation in {rootPath}\n I will go to there and open the folder for you but you will need to click me again to continue the installation process") == MessageBoxResult.OK)
                         {
 
                             if (!(assemblyLocation == Path.Combine(rootPath, assemblyName)))
@@ -871,27 +871,7 @@ namespace DuskhavenLauncher
                     }
                     else
                     {
-                        if (System.Windows.MessageBox.Show($"No valid WoW 3.3.5 installation in {rootPath}\nwant to still install the launcher there?") == MessageBoxResult.OK)
-                        {
-                            if (!(assemblyLocation == Path.Combine(rootPath, assemblyName)))
-                            {
-                                File.Move(assemblyLocation, Path.Combine(rootPath, assemblyName));
-                                Process.Start(rootPath);
-                                Close();
-                                while (System.Windows.Application.Current != null && System.Windows.Application.Current.MainWindow != null)
-                                {
-                                    Thread.Sleep(100); // Wait for 0.1 seconds
-                                }
-                            }
-
-
-
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show($"Alright, just put me in a wow install folder when you are ready.");
-                        }
-
+                        System.Windows.MessageBox.Show($"No valid WoW 3.3.5 installation in {rootPath}.\n Please make sure you select a folder with a valid 3.3.5 wow installation before we can continue installing Duskhaven");
                     }
 
                     if (!Directory.Exists(tempDl))
