@@ -495,13 +495,13 @@ namespace DuskhavenLauncher
                 }
                 else
                 {
-                    if (file.Name.Contains("patch-Z"))
+                    /*if (file.Name.Contains("patch-Z"))
                     {
                         AddActionListItem($"checking {file.Name}, this may take a while...");
                         Console.WriteLine("we got a patch Z");
                         await CheckSignature(file.Name);
                         continue;
-                    }
+                    }*/
                     fileUpdateList.Add(file.Name);
                     AddActionListItem($"{file.Name} is out of date, adding to update list", ActionType.failAction);
                     Console.WriteLine($"{file.Name} is out of date and needs an update.");
@@ -599,7 +599,6 @@ namespace DuskhavenLauncher
                 {
                     AddActionListItem($"Installing files needed to play");
                     Status = LauncherStatus.downloadingGame;
-                    //_onlineVersion = new Version(webClient.DownloadString("version file link"));
 
                 }
 
